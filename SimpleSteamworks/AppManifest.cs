@@ -68,5 +68,11 @@ namespace SimpleSteamworks
 
             return value;
         }
+
+        // Clear the manifest cache.
+        public void InvalidateCache()
+        {
+            _cache.Clear();
+        }
     }
 }
