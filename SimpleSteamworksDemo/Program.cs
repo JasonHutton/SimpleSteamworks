@@ -24,8 +24,7 @@ namespace SimpleSteamworksDemo
             {
                 Console.WriteLine("Steam Library is here:");
             }
-            //libs.GetLibraryPaths().ForEach(Console.WriteLine(Path.GetFullPath()));
-            libs.GetLibraryPaths().ForEach(path => Console.WriteLine(Path.GetFullPath(path)));
+            libs.GetLibraryPaths().ForEach(path => Console.WriteLine(path));
 
             AppManifestCache apps = new AppManifestCache(libs);
             Console.WriteLine("App Manifest:");
@@ -36,7 +35,7 @@ namespace SimpleSteamworksDemo
             Console.WriteLine("{0}: {1}", "installdir", apps.GetManifestProperty(appId, "installdir"));
 
             string absInstallPath = apps.GetAppAbsoluteInstallPath(appId);
-            Console.WriteLine("{0}: {1}", "Absolute App installdir", Path.GetFullPath(absInstallPath));
+            Console.WriteLine("{0}: {1}", "Absolute App installdir", absInstallPath);
 
         }
     }

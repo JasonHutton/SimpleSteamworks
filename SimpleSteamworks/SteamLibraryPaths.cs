@@ -96,7 +96,7 @@ namespace SimpleSteamworks
                 {
                     if (child["path"] != null)
                     {
-                        string path = child["path"].ToString();
+                        string path = Path.GetFullPath(child["path"].ToString());
                         paths.Add(path);
                     }
                 }

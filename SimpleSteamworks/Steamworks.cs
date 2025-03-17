@@ -22,12 +22,12 @@ namespace SimpleSteamworks
                 // First, attempt to get from 64-bit registry
                 string path = GetRegistryValue(RegistryHive.LocalMachine, RegistryView.Registry64, SteamRegistryKey, InstallPathValue);
                 if (!string.IsNullOrEmpty(path))
-                    return path;
+                    return Path.GetFullPath(path);
 
                 // Fallback to 32-bit registry
                 path = GetRegistryValue(RegistryHive.LocalMachine, RegistryView.Registry32, SteamRegistryKey, InstallPathValue);
                 if (!string.IsNullOrEmpty(path))
-                    return path;
+                    return Path.GetFullPath(path);
 
                 // Steam may not be installed
                 return null;
