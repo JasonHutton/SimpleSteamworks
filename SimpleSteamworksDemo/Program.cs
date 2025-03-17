@@ -15,9 +15,8 @@ namespace SimpleSteamworksDemo
             }
             Console.WriteLine("Steam is installed here: {0}", path);
 
-            SteamLibraryPaths libs = new SteamLibraryPaths(path);
-            libs.LoadSteamLibraries();
-            if(libs.Paths.Count > 1)
+            LibraryManifests libs = new LibraryManifests(path);
+            if(libs.GetLibraryPaths().Count > 1)
             {
                 Console.WriteLine("Steam Libraries are here:");
             }
@@ -25,7 +24,8 @@ namespace SimpleSteamworksDemo
             {
                 Console.WriteLine("Steam Library is here:");
             }
-            libs.Paths.ForEach(Console.WriteLine);
+            //libs.GetLibraryPaths().ForEach(Console.WriteLine(Path.GetFullPath()));
+            libs.GetLibraryPaths().ForEach(path => Console.WriteLine(Path.GetFullPath(path)));
 
             AppManifestCache apps = new AppManifestCache(libs);
             Console.WriteLine("App Manifest:");
@@ -34,6 +34,9 @@ namespace SimpleSteamworksDemo
             Console.WriteLine("{0}: {1}", "appid", apps.GetManifestProperty(appId, "appid"));
             Console.WriteLine("{0}: {1}", "name", apps.GetManifestProperty(appId, "name"));
             Console.WriteLine("{0}: {1}", "installdir", apps.GetManifestProperty(appId, "installdir"));
+
+            string absInstallPath = apps.GetAppAbsoluteInstallPath(appId);
+            Console.WriteLine("{0}: {1}", "Absolute App installdir", Path.GetFullPath(absInstallPath));
 
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using ValveKeyValue;
 
 namespace SimpleSteamworks
@@ -9,17 +8,17 @@ namespace SimpleSteamworks
     public class AppManifestCache
     {
         // Cache mapping app id -> parsed manifest KV object.
-        private readonly Dictionary<int, KVObject> _cache = new Dictionary<int, KVObject>();
+        private readonly Cache<int, KVObject> _cache = new Cache<int, KVObject>();
 
         // Reference to the loaded Steam library paths.
-        private readonly SteamLibraryPaths _libraryPaths;
+        private readonly LibraryManifests _libraryManifests;
 
         // A KV serializer configured for Valve's text format.
         private readonly KVSerializer _kvSerializer;
 
-        public AppManifestCache(SteamLibraryPaths libraryPaths)
+        public AppManifestCache(LibraryManifests libraryManifests)
         {
-            _libraryPaths = libraryPaths ?? throw new ArgumentNullException(nameof(libraryPaths));
+            _libraryManifests = libraryManifests ?? throw new ArgumentNullException(nameof(libraryManifests));
             _kvSerializer = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
         }
 
@@ -29,8 +28,8 @@ namespace SimpleSteamworks
             if (_cache.ContainsKey(appId))
                 return _cache[appId];
 
-            // Iterate over each Steam library path.
-            foreach (string library in _libraryPaths.Paths)
+            List<string> libraryPaths = _libraryManifests.GetLibraryPaths();
+            foreach (string library in libraryPaths)
             {
                 string manifestPath = Path.Combine(library, "steamapps", $"appmanifest_{appId}.acf");
                 if (File.Exists(manifestPath))
@@ -69,10 +68,18 @@ namespace SimpleSteamworks
             return value;
         }
 
-        // Clear the manifest cache.
+        public string GetAppAbsoluteInstallPath(int appId)
+        {
+            var appLib = _libraryManifests.FindLibraryForApp(appId);
+            var appInstallDir = GetManifestProperty(appId, "installdir");
+            string appAbsoluteInstallPath = Path.Combine(appLib, "steamapps", "common", appInstallDir);
+
+            return appAbsoluteInstallPath;
+        }
+
         public void InvalidateCache()
         {
-            _cache.Clear();
+            _cache.InvalidateCache();
         }
     }
 }
